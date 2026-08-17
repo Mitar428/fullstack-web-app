@@ -1,0 +1,16 @@
+{
+    "name": "medical/clinic",
+    "description": "sistem za medicinsku kliniku",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Medical\\Clinic\\": "app/"
+        }
+    },
+    "require": {
+        "twig/twig": "^3.19",
+        "phpoffice/phpspreadsheet": "^2.1",
+        "dompdf/dompdf": "^3.1",
+        "monolog/monolog": "^2.11"
+    }
+}

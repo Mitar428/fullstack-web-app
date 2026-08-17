@@ -1,0 +1,69 @@
+{% extends 'layouts/admin.html.twig' %}
+
+{% block page_title %}{{ user ? 'Izmeni korisnika' : 'Novi korisnik' }}{% endblock %}
+
+{% block content %}
+
+<div class="card border-0 shadow-sm" style="max-width: 600px;">
+    <div class="card-header bg-white fw-semibold">
+        {{ user ? 'Izmeni korisnika' : 'Dodaj novog korisnika' }}
+    </div>
+    <div class="card-body">
+
+        {% if user %}
+            <form action="{{ app_url }}/admin/korisnici/{{ user.id }}/izmeni" method="POST">
+        {% else %}
+            <form action="{{ app_url }}/admin/korisnici/novi" method="POST">
+        {% endif %}
+
+            <div class="row">
+                <div class="col mb-3">
+                    <label class="form-label">Ime</label>
+                    <input type="text" name="first_name" class="form-control" 
+                           value="{{ user ? user.first_name : '' }}" required>
+                </div>
+                <div class="col mb-3">
+                    <label class="form-label">Prezime</label>
+                    <input type="text" name="last_name" class="form-control" 
+                           value="{{ user ? user.last_name : '' }}" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" 
+                       value="{{ user ? user.email : '' }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Uloga</label>
+                <select name="role_id" class="form-select">
+                    <option value="1" {{ user and user.role_id == 1 ? 'selected' }}>Administrator</option>
+                    <option value="2" {{ user and user.role_id == 2 ? 'selected' }}>Menadžer/Doktor</option>
+                    <option value="3" {{ (not user) or user.role_id == 3 ? 'selected' }}>Pacijent</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">
+                    Lozinka {{ user ? '(ostavite prazno da ne menjate)' : '' }}
+                </label>
+                <input type="password" name="password" class="form-control" 
+                       placeholder="{{ user ? '••••••••' : 'Minimum 8 karaktera' }}"
+                       {{ user ? '' : 'required' }}>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg me-1"></i> Sačuvaj
+                </button>
+                <a href="{{ app_url }}/admin/korisnici" class="btn btn-outline-secondary">
+                    Otkaži
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}

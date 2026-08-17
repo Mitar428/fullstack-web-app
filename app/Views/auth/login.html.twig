@@ -1,0 +1,54 @@
+{%extends 'layouts/base.html.twig' %}
+
+{% block title %}Prijava — {{ app_name }}{% endblock %}
+
+{% block body %}
+<div class="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+    <div class="card shadow" style="width: 420px;">
+
+        <div class="card-header bg-primary text-white text-center py-4">
+            <h4 class="mb-0">
+                <i class="bi bi-hospital me-2"></i>{{ app_name }}
+            </h4>
+            <small>Prijavite se na sistem</small>
+        </div>
+
+        <div class="card-body p-4">
+
+            {# Flash poruke #}
+            {% if flash.error %}
+                <div class="alert alert-danger">{{ flash.error }}</div>
+            {% endif %}
+            {% if flash.success %}
+                <div class="alert alert-success">{{ flash.success }}</div>
+            {% endif %}
+
+            <form action="{{ app_url }}/login" method="POST">
+
+                <div class="mb-3">
+                    <label class="form-label">Email adresa</label>
+                    <input type="email" name="email" class="form-control" 
+                           placeholder="vasa@email.com" required autofocus>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Lozinka</label>
+                    <input type="password" name="password" class="form-control" 
+                           placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Prijavi se
+                </button>
+
+            </form>
+        </div>
+
+        <div class="card-footer text-center text-muted">
+            Nemate nalog? 
+            <a href="{{ app_url }}/register">Registrujte se</a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

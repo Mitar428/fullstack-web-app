@@ -1,0 +1,77 @@
+{% extends 'layouts/guest.html.twig' %}
+
+{% block title %}Naši lekari — {{ app_name }}{% endblock %}
+
+{% block content %}
+
+<div class="bg-primary text-white py-5">
+    <div class="container text-center">
+        <h1 class="fw-bold">Naši lekari</h1>
+        <p class="lead">Upoznajte naš tim stručnjaka</p>
+    </div>
+</div>
+
+<div class="container py-5">
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width:80px;height:80px;">
+                        <i class="bi bi-person-badge text-primary fs-2"></i>
+                    </div>
+                    <h5 class="fw-bold">Dr. Milena Stojanović</h5>
+                    <span class="badge bg-info text-dark mb-2">Kardiologija</span>
+                    <p class="text-muted small">Specijalista kardiologije sa 10 godina iskustva u dijagnostici i lečenju bolesti srca i krvnih sudova.</p>
+                    <div class="text-muted small">
+                        <i class="bi bi-clock me-1"></i> Pon–Pet: 08:00–16:00
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width:80px;height:80px;">
+                        <i class="bi bi-person-badge text-success fs-2"></i>
+                    </div>
+                    <h5 class="fw-bold">Dr. Zoran Lukić</h5>
+                    <span class="badge bg-success mb-2">Neurologija</span>
+                    <p class="text-muted small">Neurolog i subspecijalista za epilepsiju sa dugogodišnjim iskustvom u lečenju bolesti nervnog sistema.</p>
+                    <div class="text-muted small">
+                        <i class="bi bi-clock me-1"></i> Pon–Pet: 08:00–16:00
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div class="rounded-circle bg-warning bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width:80px;height:80px;">
+                        <i class="bi bi-person-badge text-warning fs-2"></i>
+                    </div>
+                    <h5 class="fw-bold">Dr. Vesna Marković</h5>
+                    <span class="badge bg-warning text-dark mb-2">Opšta medicina</span>
+                    <p class="text-muted small">Izabrani lekar za odrasle i specijalista opšte medicine, posvećena primarnoj zdravstvenoj zaštiti.</p>
+                    <div class="text-muted small">
+                        <i class="bi bi-clock me-1"></i> Pon–Pet: 08:00–16:00
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="text-center mt-5">
+        <p class="text-muted mb-3">Zakažite pregled kod jednog od naših lekara</p>
+        <a href="{{ app_url }}/register" class="btn btn-primary btn-lg">
+            <i class="bi bi-calendar-plus me-2"></i>Zakažite pregled
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,214 @@
+{% extends 'layouts/manager.html.twig' %}
+
+{% block page_title %}Detalji pacijenta{% endblock %}
+
+{% block content %}
+
+{# Zaglavlje — info o pacijentu #}
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+
+            <div>
+                <h4 class="fw-bold mb-1">
+                    <i class="bi bi-person-heart text-primary me-2"></i>
+                    {{ pacijent.first_name }} {{ pacijent.last_name }}
+                </h4>
+                <div class="text-muted">{{ pacijent.email }}</div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a href="{{ app_url }}/manager/pacijenti/{{ pacijent.id }}/karton/novi"
+                   class="btn btn-primary">
+                    <i class="bi bi-file-medical me-1"></i> Dodaj medicinski karton
+                </a>
+                <a href="{{ app_url }}/manager/pacijenti" class="btn btn-outline-secondary">
+                    ← Nazad
+                </a>
+            </div>
+
+        </div>
+
+        <hr>
+
+        <div class="row g-3 mt-1">
+            <div class="col-sm-6 col-md-3">
+                <div class="text-muted small">Datum rođenja</div>
+                <div class="fw-semibold">{{ pacijent.date_of_birth|date('d.m.Y') }}</div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="text-muted small">Pol</div>
+                <div class="fw-semibold">
+                    {% if pacijent.gender == 'M' %}Muški
+                    {% elseif pacijent.gender == 'F' %}Ženski
+                    {% else %}Ostalo{% endif %}
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="text-muted small">Krvna grupa</div>
+                <div><span class="badge bg-danger fs-6">{{ pacijent.blood_type }}</span></div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="text-muted small">Telefon</div>
+                <div class="fw-semibold">{{ pacijent.phone ?? '—' }}</div>
+            </div>
+            {% if pacijent.address %}
+            <div class="col-sm-6 col-md-6">
+                <div class="text-muted small">Adresa</div>
+                <div class="fw-semibold">{{ pacijent.address }}</div>
+            </div>
+            {% endif %}
+            {% if pacijent.allergies %}
+            <div class="col-12">
+                <div class="text-muted small">Alergije</div>
+                <div class="alert alert-warning py-1 px-2 mb-0 d-inline-block">
+                    <i class="bi bi-exclamation-triangle me-1"></i>{{ pacijent.allergies }}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+
+    {# MEDICINSKI KARTONI #}
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">
+                    <i class="bi bi-file-medical-fill text-primary me-2"></i>Medicinski kartoni
+                    <span class="badge bg-secondary ms-1">{{ kartoni|length }}</span>
+                </span>
+                <a href="{{ app_url }}/manager/pacijenti/{{ pacijent.id }}/karton/novi"
+                   class="btn btn-sm btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i> Novi karton
+                </a>
+            </div>
+
+            {% if kartoni|length > 0 %}
+            <div class="card-body p-0">
+                <div class="accordion" id="kartoniAccordion">
+                    {% for k in kartoni %}
+                    <div class="accordion-item border-0 border-bottom">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button {{ not loop.first ? 'collapsed' }}" type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#karton{{ k.id }}">
+                                <div class="d-flex w-100 justify-content-between align-items-center pe-3">
+                                    <div>
+                                        <span class="fw-semibold me-2">Karton #{{ k.id }}</span>
+                                        <span class="badge bg-light text-dark border">{{ k.doctor_name }}</span>
+                                        <span class="badge bg-info text-dark ms-1">{{ k.specialization }}</span>
+                                    </div>
+                                    <span class="text-muted small">{{ k.created_at|date('d.m.Y') }}</span>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="karton{{ k.id }}"
+                             class="accordion-collapse collapse {{ loop.first ? 'show' }}">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="fw-semibold text-muted small mb-1">SIMPTOMI</div>
+                                        <p class="mb-0">{{ k.symptoms }}</p>
+                                    </div>
+                                    {% if k.treatment %}
+                                    <div class="col-md-6">
+                                        <div class="fw-semibold text-muted small mb-1">TERAPIJA</div>
+                                        <p class="mb-0">{{ k.treatment }}</p>
+                                    </div>
+                                    {% endif %}
+                                    {% if k.prescription %}
+                                    <div class="col-md-6">
+                                        <div class="fw-semibold text-muted small mb-1">PROPISANI LEKOVI</div>
+                                        <p class="mb-0 font-monospace small bg-light p-2 rounded">{{ k.prescription }}</p>
+                                    </div>
+                                    {% endif %}
+                                    {% if k.diagnoses %}
+                                    <div class="col-md-6">
+                                        <div class="fw-semibold text-muted small mb-1">DIJAGNOZE</div>
+                                        <p class="mb-0">{{ k.diagnoses }}</p>
+                                    </div>
+                                    {% endif %}
+                                    {% if k.follow_up_date %}
+                                    <div class="col-12">
+                                        <div class="alert alert-info py-2 mb-0">
+                                            <i class="bi bi-calendar-event me-2"></i>
+                                            <strong>Kontrolni pregled:</strong> {{ k.follow_up_date|date('d.m.Y') }}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+            <div class="card-body text-center text-muted py-4">
+                <i class="bi bi-file-medical fs-2 d-block mb-2"></i>
+                Pacijent nema medicinskih kartona.
+                <div class="mt-2">
+                    <a href="{{ app_url }}/manager/pacijenti/{{ pacijent.id }}/karton/novi"
+                       class="btn btn-sm btn-primary">
+                        Dodaj prvi karton
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# TERMINI #}
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-semibold">
+                <i class="bi bi-calendar3 me-2"></i>Termini pacijenta
+                <span class="badge bg-secondary ms-1">{{ termini|length }}</span>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0 small">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Lekar</th>
+                            <th>Datum i vreme</th>
+                            <th>Razlog</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in termini %}
+                        <tr>
+                            <td>{{ t.id }}</td>
+                            <td>{{ t.doctor_name }}<br><span class="text-muted">{{ t.specialization }}</span></td>
+                            <td>{{ t.scheduled_at|date('d.m.Y H:i') }}</td>
+                            <td>{{ t.reason ?? '—' }}</td>
+                            <td>
+                                {% if t.status == 'pending' %}
+                                    <span class="badge bg-warning text-dark">Na čekanju</span>
+                                {% elseif t.status == 'confirmed' %}
+                                    <span class="badge bg-success">Potvrđen</span>
+                                {% elseif t.status == 'completed' %}
+                                    <span class="badge bg-info text-dark">Završen</span>
+                                {% elseif t.status == 'cancelled' %}
+                                    <span class="badge bg-danger">Otkazan</span>
+                                {% elseif t.status == 'no_show' %}
+                                    <span class="badge bg-secondary">Nije se pojavio</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="5" class="text-center text-muted py-3">Nema termina.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

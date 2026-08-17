@@ -1,0 +1,91 @@
+{% extends 'layouts/manager.html.twig' %}
+
+{% block page_title %}Poruke{% endblock %}
+
+{% block content %}
+
+<div class="row g-4">
+
+    {# Lista poruka #}
+    <div class="col-md-7">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-semibold">
+                <i class="bi bi-inbox me-2"></i>Poruke
+                <span class="badge bg-secondary ms-2">{{ poruke|length }}</span>
+            </div>
+            <div class="card-body p-0">
+                {% if poruke|length > 0 %}
+                <div class="list-group list-group-flush">
+                    {% for p in poruke %}
+                    <div class="list-group-item {{ p.receiver_id == session.user_id and not p.is_read ? 'list-group-item-warning' : '' }}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="fw-semibold">
+                                    {% if p.sender_id == session.user_id %}
+                                        <i class="bi bi-arrow-right text-success me-1"></i> Ka: {{ p.receiver_name }}
+                                    {% else %}
+                                        <i class="bi bi-arrow-left text-primary me-1"></i> Od: {{ p.sender_name }}
+                                    {% endif %}
+                                </div>
+                                <div class="small text-muted">{{ p.subject }}</div>
+                                <div class="mt-1">{{ p.body }}</div>
+                            </div>
+                            <div class="text-muted small text-nowrap ms-3">
+                                {{ p.sent_at|date('d.m.Y H:i') }}
+                                {% if p.receiver_id == session.user_id and not p.is_read %}
+                                    <span class="badge bg-warning text-dark ms-1">Novo</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-5">
+                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                    Nema poruka.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# Forma za novu poruku #}
+    <div class="col-md-5">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-semibold">
+                <i class="bi bi-reply me-2"></i>Pošalji poruku
+            </div>
+            <div class="card-body">
+                <form action="{{ app_url }}/manager/poruke/reply" method="POST">
+
+                    <div class="mb-3">
+                        <label class="form-label">Primalac (ID korisnika)</label>
+                        <input type="number" name="receiver_id" class="form-control"
+                               placeholder="Unesite ID korisnika" required min="1">
+                        <div class="form-text">Pronađite ID korisnika na stranici pacijenata.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Naslov</label>
+                        <input type="text" name="subject" class="form-control"
+                               placeholder="Naslov poruke" value="(bez naslova)">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Poruka</label>
+                        <textarea name="body" class="form-control" rows="4"
+                                  placeholder="Unesite tekst poruke..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-send me-1"></i> Pošalji
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

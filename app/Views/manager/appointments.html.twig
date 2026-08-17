@@ -1,0 +1,105 @@
+{% extends 'layouts/manager.html.twig' %}
+
+{% block page_title %}Termini{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">Upravljanje terminima</h5>
+</div>
+
+{# Filter po statusu #}
+<div class="mb-3 d-flex gap-2 flex-wrap">
+    <a href="{{ app_url }}/manager/termini"
+       class="btn btn-sm {{ activeStatus == '' ? 'btn-primary' : 'btn-outline-primary' }}">Svi</a>
+    <a href="{{ app_url }}/manager/termini?status=pending"
+       class="btn btn-sm {{ activeStatus == 'pending' ? 'btn-warning' : 'btn-outline-warning' }}">Na čekanju</a>
+    <a href="{{ app_url }}/manager/termini?status=confirmed"
+       class="btn btn-sm {{ activeStatus == 'confirmed' ? 'btn-success' : 'btn-outline-success' }}">Potvrđeni</a>
+    <a href="{{ app_url }}/manager/termini?status=completed"
+       class="btn btn-sm {{ activeStatus == 'completed' ? 'btn-info' : 'btn-outline-info' }}">Završeni</a>
+    <a href="{{ app_url }}/manager/termini?status=cancelled"
+       class="btn btn-sm {{ activeStatus == 'cancelled' ? 'btn-danger' : 'btn-outline-danger' }}">Otkazani</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-calendar3 me-2"></i>Termini
+        <span class="badge bg-secondary ms-2">{{ termini|length }}</span>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Pacijent</th>
+                    <th>Lekar</th>
+                    <th>Datum i vreme</th>
+                    <th>Razlog</th>
+                    <th>Status</th>
+                    <th class="text-end">Akcije</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in termini %}
+                <tr>
+                    <td>{{ t.id }}</td>
+                    <td>{{ t.patient_name }}</td>
+                    <td>{{ t.doctor_name }}<br><small class="text-muted">{{ t.specialization }}</small></td>
+                    <td>{{ t.scheduled_at|date('d.m.Y H:i') }}</td>
+                    <td>{{ t.reason ?? '—' }}</td>
+                    <td>
+                        {% if t.status == 'pending' %}
+                            <span class="badge bg-warning text-dark">Na čekanju</span>
+                        {% elseif t.status == 'confirmed' %}
+                            <span class="badge bg-success">Potvrđen</span>
+                        {% elseif t.status == 'completed' %}
+                            <span class="badge bg-info text-dark">Završen</span>
+                        {% elseif t.status == 'cancelled' %}
+                            <span class="badge bg-danger">Otkazan</span>
+                        {% elseif t.status == 'no_show' %}
+                            <span class="badge bg-secondary">Nije se pojavio</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        {% if t.status == 'pending' %}
+                            <form action="{{ app_url }}/manager/termini/{{ t.id }}/status" method="POST" class="d-inline">
+                                <input type="hidden" name="status" value="confirmed">
+                                <button class="btn btn-sm btn-success" title="Potvrdi">
+                                    <i class="bi bi-check-lg"></i>
+                                </button>
+                            </form>
+                            <form action="{{ app_url }}/manager/termini/{{ t.id }}/status" method="POST" class="d-inline">
+                                <input type="hidden" name="status" value="cancelled">
+                                <button class="btn btn-sm btn-outline-danger" title="Otkaži"
+                                        onclick="return confirm('Otkazati termin?')">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </form>
+                        {% elseif t.status == 'confirmed' %}
+                            <form action="{{ app_url }}/manager/termini/{{ t.id }}/status" method="POST" class="d-inline">
+                                <input type="hidden" name="status" value="completed">
+                                <button class="btn btn-sm btn-info" title="Označi kao završen">
+                                    <i class="bi bi-check-circle"></i>
+                                </button>
+                            </form>
+                            <form action="{{ app_url }}/manager/termini/{{ t.id }}/status" method="POST" class="d-inline">
+                                <input type="hidden" name="status" value="no_show">
+                                <button class="btn btn-sm btn-outline-secondary" title="Nije se pojavio">
+                                    <i class="bi bi-person-dash"></i>
+                                </button>
+                            </form>
+                        {% else %}
+                            <span class="text-muted small">—</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" class="text-center text-muted py-4">Nema termina za prikaz.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

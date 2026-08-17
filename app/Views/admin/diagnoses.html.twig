@@ -1,0 +1,42 @@
+{% extends 'layouts/admin.html.twig' %}
+
+{% block page_title %}Dijagnoze{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">Katalog dijagnoza (ICD-10)</h5>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-clipboard2-pulse me-2"></i>Dijagnoze
+        <span class="badge bg-secondary ms-2">{{ dijagnoze|length }}</span>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>ICD-10 Kod</th>
+                    <th>Naziv</th>
+                    <th>Opis</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in dijagnoze %}
+                <tr>
+                    <td>{{ d.id }}</td>
+                    <td><span class="badge bg-primary font-monospace">{{ d.icd_code }}</span></td>
+                    <td class="fw-semibold">{{ d.name }}</td>
+                    <td class="text-muted small">{{ d.description ?? '—' }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="text-center text-muted py-4">Nema dijagnoza.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

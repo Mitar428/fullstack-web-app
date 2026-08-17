@@ -1,0 +1,69 @@
+{% extends 'layouts/manager.html.twig' %}
+
+{% block page_title %}Pacijenti{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">Pregled pacijenata</h5>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-person-heart me-2"></i>Pacijenti
+        <span class="badge bg-secondary ms-2">{{ pacijenti|length }}</span>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Ime i prezime</th>
+                    <th>Email</th>
+                    <th>Datum rođenja</th>
+                    <th>Pol</th>
+                    <th>Krvna grupa</th>
+                    <th>Telefon</th>
+                    <th>Alergije</th>
+                    <th class="text-end">Akcije</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in pacijenti %}
+                <tr>
+                    <td>{{ p.id }}</td>
+                    <td class="fw-semibold">{{ p.first_name }} {{ p.last_name }}</td>
+                    <td>{{ p.email }}</td>
+                    <td>{{ p.date_of_birth|date('d.m.Y') }}</td>
+                    <td>
+                        {% if p.gender == 'M' %}<i class="bi bi-gender-male text-primary"></i> Muški
+                        {% elseif p.gender == 'F' %}<i class="bi bi-gender-female text-danger"></i> Ženski
+                        {% else %}Ostalo{% endif %}
+                    </td>
+                    <td><span class="badge bg-danger">{{ p.blood_type }}</span></td>
+                    <td>{{ p.phone ?? '—' }}</td>
+                    <td>
+                        {% if p.allergies %}
+                            <span class="text-warning" title="{{ p.allergies }}">
+                                <i class="bi bi-exclamation-triangle"></i> {{ p.allergies|slice(0,30) }}{% if p.allergies|length > 30 %}...{% endif %}
+                            </span>
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <a href="{{ app_url }}/manager/pacijenti/{{ p.id }}"
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i> Detalji
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="9" class="text-center text-muted py-4">Nema pacijenata.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

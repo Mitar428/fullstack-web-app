@@ -1,0 +1,135 @@
+{% extends 'layouts/admin.html.twig' %}
+
+{% block page_title %}
+    Pacijenti
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">Svi pacijenti</h5>
+</div>
+
+
+<div class="card border-0 shadow-sm">
+
+    <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-person-heart me-2"></i>Pacijenti klinike
+    </div>
+
+
+    <div class="card-body p-0">
+
+        <table class="table table-hover mb-0">
+
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Ime i prezime</th>
+                    <th>Email</th>
+                    <th>Datum rođenja</th>
+                    <th>Pol</th>
+                    <th>Krvna grupa</th>
+                    <th>Telefon</th>
+                    <th>Status</th>
+                    <th class="text-end">Akcije</th>
+                </tr>
+            </thead>
+
+
+            <tbody>
+
+                {% for p in pacijenti %}
+
+                <tr>
+
+                    <td>{{ p.id }}</td>
+
+                    <td class="fw-semibold">
+                        {{ p.first_name }} {{ p.last_name }}
+                    </td>
+
+                    <td>
+                        {{ p.email }}
+                    </td>
+
+                    <td>
+                        {{ p.date_of_birth|date('d.m.Y') }}
+                    </td>
+
+                    <td>
+                        {% if p.gender == 'M' %}
+                            Muški
+                        {% elseif p.gender == 'F' %}
+                            Ženski
+                        {% else %}
+                            Ostalo
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <span class="badge bg-danger">
+                            {{ p.blood_type }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {{ p.phone ?? '—' }}
+                    </td>
+
+
+                    <td>
+
+                        {% if p.is_active %}
+                            <span class="badge bg-success">
+                                Aktivan
+                            </span>
+                        {% else %}
+                            <span class="badge bg-secondary">
+                                Neaktivan
+                            </span>
+                        {% endif %}
+
+                    </td>
+
+
+                    <td class="text-end">
+
+                        <a href="{{ app_url }}/manager/pacijenti/{{ p.id }}"
+                           class="btn btn-sm btn-outline-primary">
+
+                            <i class="bi bi-eye"></i>
+                            Detalji
+
+                        </a>
+
+                    </td>
+
+
+                </tr>
+
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="9" class="text-center text-muted py-4">
+                        Nema pacijenata u sistemu.
+                    </td>
+
+                </tr>
+
+
+                {% endfor %}
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

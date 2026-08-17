@@ -1,0 +1,164 @@
+{% extends 'layouts/manager.html.twig' %}
+
+{% block page_title %}Novi medicinski karton{% endblock %}
+
+{% block content %}
+
+{# Mini info o pacijentu #}
+<div class="alert alert-light border d-flex align-items-center gap-3 mb-4">
+    <i class="bi bi-person-heart text-primary fs-3"></i>
+    <div>
+        <div class="fw-semibold fs-5">{{ pacijent.first_name }} {{ pacijent.last_name }}</div>
+        <div class="text-muted small">
+            {{ pacijent.email }}
+            &nbsp;·&nbsp; Krvna grupa: <strong>{{ pacijent.blood_type }}</strong>
+            {% if pacijent.allergies %}
+                &nbsp;·&nbsp; <span class="text-warning"><i class="bi bi-exclamation-triangle"></i> Alergije: {{ pacijent.allergies }}</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<form action="{{ app_url }}/manager/pacijenti/{{ pacijent.id }}/karton/novi" method="POST">
+
+    <div class="row g-4">
+
+        {# Leva kolona #}
+        <div class="col-lg-8">
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white fw-semibold">
+                    <i class="bi bi-clipboard2-pulse me-2"></i>Medicinski podaci
+                </div>
+                <div class="card-body">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Lekar <span class="text-danger">*</span></label>
+                        {% if myDoctor %}
+                            {# Lekar je ulogovan — zaključano na njega, ne može selektovati drugog #}
+                            <input type="hidden" name="doctor_id" value="{{ myDoctor.id }}">
+                            <div class="form-control bg-light text-muted d-flex align-items-center gap-2">
+                                <i class="bi bi-lock-fill text-secondary"></i>
+                                <span>{{ session.user_name }} — {{ myDoctor.specialization_name }}</span>
+                            </div>
+                            <div class="form-text">Karton se automatski vezuje za vas kao lekara.</div>
+                        {% else %}
+                            {# Manager koji nije lekar — bira iz svih lekara #}
+                            <select name="doctor_id" class="form-select" required>
+                                <option value="">— Izaberite lekara —</option>
+                                {% for l in lekari %}
+                                <option value="{{ l.id }}">{{ l.doctor_name }} — {{ l.specialization_name }}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Vezani termin (opcionalno)</label>
+                        <select name="appointment_id" class="form-select">
+                            <option value="">— Nije vezano za termin (pacijent bez zakazivanja) —</option>
+                            {% for t in termini %}
+                            <option value="{{ t.id }}">
+                                #{{ t.id }} — {{ t.scheduled_at|date('d.m.Y H:i') }}
+                                {% if not myDoctor %} — {{ t.doctor_name }}{% endif %}
+                                ({% if t.status == 'completed' %}Završen
+                                 {% elseif t.status == 'confirmed' %}Potvrđen
+                                 {% elseif t.status == 'pending' %}Na čekanju
+                                 {% else %}{{ t.status }}{% endif %})
+                                {% if t.reason %} · {{ t.reason|slice(0,30) }}{% endif %}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">
+                            {% if myDoctor %}
+                                Prikazani su samo vaši termini sa ovim pacijentom.
+                            {% else %}
+                                Ako je karton kreiran nakon pregleda, povežite ga sa termininom.
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Simptomi <span class="text-danger">*</span></label>
+                        <textarea name="symptoms" class="form-control" rows="3" required
+                                  placeholder="Opišite simptome pacijenta..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Terapija</label>
+                        <textarea name="treatment" class="form-control" rows="3"
+                                  placeholder="Propisana terapija, preporuke..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Propisani lekovi (recept)</label>
+                        <textarea name="prescription" class="form-control" rows="3"
+                                  placeholder="npr. Paracetamol 500mg 3x1, Amoksicilin 500mg 2x1..."></textarea>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Datum kontrolnog pregleda</label>
+                            <input type="date" name="follow_up_date" class="form-control">
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end">
+                            <div class="form-check mb-2">
+                                <input type="checkbox" name="is_confidential" value="1"
+                                       class="form-check-input" id="isConfidential">
+                                <label class="form-check-label" for="isConfidential">
+                                    <i class="bi bi-lock me-1"></i> Poverljiv zapis
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        {# Desna kolona — dijagnoze #}
+        <div class="col-lg-4">
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white fw-semibold">
+                    <i class="bi bi-clipboard2-check me-2"></i>Dijagnoze (ICD-10)
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush" style="max-height: 450px; overflow-y: auto;">
+                        {% for d in dijagnoze %}
+                        <label class="list-group-item list-group-item-action py-2 cursor-pointer">
+                            <div class="d-flex align-items-center gap-2">
+                                <input type="checkbox" name="diagnosis_ids[]"
+                                       value="{{ d.id }}" class="form-check-input mt-0 flex-shrink-0">
+                                <div>
+                                    <span class="badge bg-primary font-monospace me-1">{{ d.icd_code }}</span>
+                                    <span class="small">{{ d.name }}</span>
+                                </div>
+                            </div>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="card-footer bg-white text-muted small">
+                    Označite sve relevantne dijagnoze
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    {# Dugmad #}
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary px-4">
+            <i class="bi bi-check-lg me-1"></i> Sačuvaj karton
+        </button>
+        <a href="{{ app_url }}/manager/pacijenti/{{ pacijent.id }}" class="btn btn-outline-secondary">
+            Otkaži
+        </a>
+    </div>
+
+</form>
+
+{% endblock %}

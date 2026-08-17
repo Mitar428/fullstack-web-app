@@ -1,0 +1,55 @@
+{% extends 'layouts/admin.html.twig' %}
+
+{% block page_title %}Lekari{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">Svi lekari</h5>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-person-badge me-2"></i>Lekari klinike
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Ime i prezime</th>
+                    <th>Email</th>
+                    <th>Specijalnost</th>
+                    <th>Licenca</th>
+                    <th>Telefon</th>
+                    <th>Radno vreme</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lekar in lekari %}
+                <tr>
+                    <td>{{ lekar.id }}</td>
+                    <td class="fw-semibold">{{ lekar.first_name }} {{ lekar.last_name }}</td>
+                    <td>{{ lekar.email }}</td>
+                    <td><span class="badge bg-info text-dark">{{ lekar.specialization_name }}</span></td>
+                    <td><code>{{ lekar.license_number }}</code></td>
+                    <td>{{ lekar.phone ?? '—' }}</td>
+                    <td>{{ lekar.working_hours_from|slice(0,5) }} – {{ lekar.working_hours_to|slice(0,5) }}</td>
+                    <td>
+                        {% if lekar.is_active %}
+                            <span class="badge bg-success">Aktivan</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Neaktivan</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="8" class="text-center text-muted py-4">Nema lekara u sistemu.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

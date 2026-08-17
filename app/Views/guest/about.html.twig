@@ -1,0 +1,83 @@
+{% extends 'layouts/guest.html.twig' %}
+
+{% block title %}O nama — {{ app_name }}{% endblock %}
+
+{% block content %}
+
+<div class="bg-primary text-white py-5">
+    <div class="container text-center">
+        <h1 class="fw-bold">O nama</h1>
+        <p class="lead">Saznajte više o našoj klinici i timu</p>
+    </div>
+</div>
+
+<div class="container py-5">
+
+    <div class="row g-5 align-items-center mb-5">
+        <div class="col-md-6">
+            <h2 class="fw-bold mb-3">Naša misija</h2>
+            <p class="text-muted lead">
+                Medicinska klinika pruža vrhunsku zdravstvenu zaštitu svim pacijentima od 2010. godine.
+                Naš tim iskusnih lekara i medicinskog osoblja posvećen je pružanju personalizovane
+                i efikasne zdravstvene nege.
+            </p>
+            <p class="text-muted">
+                Verujemo da svaki pacijent zaslužuje pažljiv i profesionalan pristup. Naš cilj je
+                da svaki poseti klinici bude prijatno iskustvo, uz brzo i tačno dijagnostikovanje
+                i lečenje.
+            </p>
+        </div>
+        <div class="col-md-6">
+            <div class="row g-3">
+                <div class="col-6">
+                    <div class="card border-0 shadow-sm text-center p-3">
+                        <div class="fs-2 fw-bold text-primary">15+</div>
+                        <div class="text-muted">Godina iskustva</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card border-0 shadow-sm text-center p-3">
+                        <div class="fs-2 fw-bold text-success">3</div>
+                        <div class="text-muted">Lekara specijalista</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card border-0 shadow-sm text-center p-3">
+                        <div class="fs-2 fw-bold text-warning">1000+</div>
+                        <div class="text-muted">Zadovoljnih pacijenata</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card border-0 shadow-sm text-center p-3">
+                        <div class="fs-2 fw-bold text-info">10</div>
+                        <div class="text-muted">Specijalnosti</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-5">
+
+    <h2 class="fw-bold text-center mb-5">Naše vrednosti</h2>
+    <div class="row g-4">
+        <div class="col-md-4 text-center">
+            <i class="bi bi-heart-pulse text-primary fs-1 mb-3"></i>
+            <h5 class="fw-bold">Briga za pacijenta</h5>
+            <p class="text-muted">Svaki pacijent je za nas prioritet. Posvećeni smo individualnom pristupu i razumevanju potreba svakog.</p>
+        </div>
+        <div class="col-md-4 text-center">
+            <i class="bi bi-shield-check text-success fs-1 mb-3"></i>
+            <h5 class="fw-bold">Profesionalnost</h5>
+            <p class="text-muted">Naš tim kontinuirano unapređuje znanje i primenjuje najnovije medicinske protokole.</p>
+        </div>
+        <div class="col-md-4 text-center">
+            <i class="bi bi-clock-history text-warning fs-1 mb-3"></i>
+            <h5 class="fw-bold">Dostupnost</h5>
+            <p class="text-muted">Online zakazivanje termina 24/7 i brzo vreme odziva osiguravaju da uvek dobijete pomoć kada vam je potrebna.</p>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
